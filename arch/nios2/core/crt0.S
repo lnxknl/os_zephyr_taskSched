@@ -142,5 +142,5 @@ SECTION_FUNC(TEXT, __start)
 
 	/* Jump into C domain. z_prep_c zeroes BSS, copies rw data into RAM,
 	 * and then enters z_cstart */
-	call z_prep_c// @NOTE 
+	call z_prep_c
 

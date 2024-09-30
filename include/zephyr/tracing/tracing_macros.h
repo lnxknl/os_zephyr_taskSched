@@ -15,7 +15,7 @@
 #define SYS_PORT_TRACING_FUNC_BLOCKING(type, func, ...) do { } while (false)
 #define SYS_PORT_TRACING_FUNC_EXIT(type, func, ...) do { } while (false)
 #define SYS_PORT_TRACING_OBJ_INIT(obj_type, obj, ...) do { } while (false)
-#define SYS_PORT_TRACING_OBJ_FUNC(obj_type, func, obj, ...) do { } while (false)// @NOTE
+#define SYS_PORT_TRACING_OBJ_FUNC(obj_type, func, obj, ...) do { } while (false)
 #define SYS_PORT_TRACING_OBJ_FUNC_ENTER(obj_type, func, obj, ...) do { } while (false)
 #define SYS_PORT_TRACING_OBJ_FUNC_BLOCKING(obj_type, func, obj, ...) do { } while (false)
 #define SYS_PORT_TRACING_OBJ_FUNC_EXIT(obj_type, func, obj, ...) do { } while (false)

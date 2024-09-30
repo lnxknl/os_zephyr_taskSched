@@ -60,7 +60,7 @@ static K_KERNEL_PINNED_STACK_ARRAY_DEFINE(z_idle_stacks,
 					  CONFIG_MP_MAX_NUM_CPUS,
 					  CONFIG_IDLE_STACK_SIZE);
 
-static void z_init_static_threads(void)// @NOTE
+static void z_init_static_threads(void)
 {
 	STRUCT_SECTION_FOREACH(_static_thread_data, thread_data) {
 		z_setup_new_thread(
@@ -372,7 +372,7 @@ extern void boot_banner(void);
  * init functions, then invokes application's main() routine.
  */
 __boot_func
-static void bg_thread_main(void *unused1, void *unused2, void *unused3)// @NOTE
+static void bg_thread_main(void *unused1, void *unused2, void *unused3)
 {
 	ARG_UNUSED(unused1);
 	ARG_UNUSED(unused2);
@@ -402,7 +402,7 @@ static void bg_thread_main(void *unused1, void *unused2, void *unused3)// @NOTE
 	/* Final init level before app starts */
 	z_sys_init_run_level(INIT_LEVEL_APPLICATION);
 
-	z_init_static_threads();// @NOTE
+	z_init_static_threads();
 
 #ifdef CONFIG_KERNEL_COHERENCE
 	__ASSERT_NO_MSG(arch_mem_coherent(&_kernel));
@@ -506,7 +506,7 @@ void z_init_cpu(int id)
  * @return initial stack pointer for the main thread
  */
 __boot_func
-static char *prepare_multithreading(void)// @NOTE
+static char *prepare_multithreading(void)
 {
 	char *stack_ptr;
 
@@ -526,7 +526,7 @@ static char *prepare_multithreading(void)// @NOTE
 	_kernel.ready_q.cache = &z_main_thread;
 #endif
 	stack_ptr = z_setup_new_thread(&z_main_thread, z_main_stack,
-				       CONFIG_MAIN_STACK_SIZE, bg_thread_main,// @NOTE
+				       CONFIG_MAIN_STACK_SIZE, bg_thread_main,
 				       NULL, NULL, NULL,
 				       CONFIG_MAIN_THREAD_PRIORITY,
 				       K_ESSENTIAL, "main");
@@ -601,7 +601,7 @@ void __weak z_early_rand_get(uint8_t *buf, size_t length)
  */
 __boot_func
 FUNC_NO_STACK_PROTECTOR
-FUNC_NORETURN void z_cstart(void)// @NOTE
+FUNC_NORETURN void z_cstart(void)
 {
 	/* gcov hook needed to get the coverage report.*/
 	gcov_static_init();
@@ -643,7 +643,7 @@ FUNC_NORETURN void z_cstart(void)// @NOTE
 #endif
 
 #ifdef CONFIG_MULTITHREADING
-	switch_to_main_thread(prepare_multithreading());// @NOTE
+	switch_to_main_thread(prepare_multithreading());
 #else
 #ifdef ARCH_SWITCH_TO_MAIN_NO_MULTITHREADING
 	/* Custom ARCH-specific routine to switch to main()

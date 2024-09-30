@@ -33,7 +33,7 @@
 
 #define _priq_run_add		z_priq_mq_add
 #define _priq_run_remove	z_priq_mq_remove
-#define _priq_run_best		z_priq_mq_best// @NOTE
+#define _priq_run_best		z_priq_mq_best
 static ALWAYS_INLINE void z_priq_mq_add(struct _priq_mq *pq, struct k_thread *thread);
 static ALWAYS_INLINE void z_priq_mq_remove(struct _priq_mq *pq, struct k_thread *thread);
 #endif

@@ -93,7 +93,7 @@ struct k_thread *z_priq_rb_best(struct _priq_rb *pq)
 	return thread;
 }
 
-struct k_thread *z_priq_mq_best(struct _priq_mq *pq)// @NOTE
+struct k_thread *z_priq_mq_best(struct _priq_mq *pq)
 {
 	struct k_thread *thread = NULL;
 

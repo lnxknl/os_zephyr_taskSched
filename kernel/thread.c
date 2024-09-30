@@ -463,7 +463,7 @@ static char *setup_thread_stack(struct k_thread *new_thread,
  * K_THREAD_STACK_SIZEOF(stack), or the size value passed to the instance
  * of K_THREAD_STACK_DEFINE() which defined 'stack'.
  */
-char *z_setup_new_thread(struct k_thread *new_thread,// @NOTE
+char *z_setup_new_thread(struct k_thread *new_thread,
 			 k_thread_stack_t *stack, size_t stack_size,
 			 k_thread_entry_t entry,
 			 void *p1, void *p2, void *p3,
@@ -515,7 +515,7 @@ char *z_setup_new_thread(struct k_thread *new_thread,// @NOTE
 
 #endif
 
-	arch_new_thread(new_thread, stack, stack_ptr, entry, p1, p2, p3);// @NOTE
+	arch_new_thread(new_thread, stack, stack_ptr, entry, p1, p2, p3);
 
 	/* static threads overwrite it afterwards with real value */
 	new_thread->init_data = NULL;
@@ -543,8 +543,8 @@ char *z_setup_new_thread(struct k_thread *new_thread,// @NOTE
 
 	k_spinlock_key_t key = k_spin_lock(&z_thread_monitor_lock);
 
-	new_thread->next_thread = _kernel.threads;// @NOTE
-	_kernel.threads = new_thread;// @NOTE
+	new_thread->next_thread = _kernel.threads;
+	_kernel.threads = new_thread;
 	k_spin_unlock(&z_thread_monitor_lock, key);
 #endif
 #ifdef CONFIG_THREAD_NAME
@@ -584,7 +584,7 @@ char *z_setup_new_thread(struct k_thread *new_thread,// @NOTE
 	new_thread->resource_pool = _current->resource_pool;
 
 #ifdef CONFIG_SMP
-	z_waitq_init(&new_thread->halt_queue);// @NOTE
+	z_waitq_init(&new_thread->halt_queue);
 #endif
 
 #ifdef CONFIG_SCHED_THREAD_USAGE
@@ -593,7 +593,7 @@ char *z_setup_new_thread(struct k_thread *new_thread,// @NOTE
 		CONFIG_SCHED_THREAD_USAGE_AUTO_ENABLE;
 #endif
 
-	SYS_PORT_TRACING_OBJ_FUNC(k_thread, create, new_thread);// @NOTE
+	SYS_PORT_TRACING_OBJ_FUNC(k_thread, create, new_thread);
 
 	return stack_ptr;
 }

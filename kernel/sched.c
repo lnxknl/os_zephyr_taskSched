@@ -304,7 +304,7 @@ static inline void clear_halting(struct k_thread *thread)
 	thread->base.thread_state &= ~(_THREAD_ABORTING | _THREAD_SUSPENDING);
 }
 
-static ALWAYS_INLINE struct k_thread *next_up(void)// @NOTE
+static ALWAYS_INLINE struct k_thread *next_up(void)
 {
 #ifdef CONFIG_SMP
 	if (is_halting(_current)) {
@@ -313,7 +313,7 @@ static ALWAYS_INLINE struct k_thread *next_up(void)// @NOTE
 	}
 #endif
 
-	struct k_thread *thread = runq_best();// @NOTE @# key func
+	struct k_thread *thread = runq_best();
 
 #if (CONFIG_NUM_METAIRQ_PRIORITIES > 0) &&                                                         \
 	(CONFIG_NUM_COOP_PRIORITIES > CONFIG_NUM_METAIRQ_PRIORITIES)

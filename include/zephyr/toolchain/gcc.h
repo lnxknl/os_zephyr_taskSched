@@ -353,7 +353,7 @@ do {                                                                    \
 #if defined(CONFIG_ARM) || defined(CONFIG_NIOS2) || defined(CONFIG_RISCV) \
 	|| defined(CONFIG_XTENSA) || defined(CONFIG_ARM64) \
 	|| defined(CONFIG_MIPS)
-#define GTEXT(sym) .global sym; .type sym, %function// @NOTE
+#define GTEXT(sym) .global sym; .type sym, %function
 #define GDATA(sym) .global sym; .type sym, %object
 #define WTEXT(sym) .weak sym; .type sym, %function
 #define WDATA(sym) .weak sym; .type sym, %object

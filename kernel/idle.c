@@ -33,7 +33,7 @@ void z_pm_save_idle_exit(void)
 #endif
 }
 
-void idle(void *unused1, void *unused2, void *unused3)// @NOTE
+void idle(void *unused1, void *unused2, void *unused3)
 {
 	ARG_UNUSED(unused1);
 	ARG_UNUSED(unused2);
