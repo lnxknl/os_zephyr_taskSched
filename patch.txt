@@ -1,0 +1,263 @@
+diff --git a/arch/arm/core/cortex_m/prep_c.c b/arch/arm/core/cortex_m/prep_c.c
+index 422d45b5..2fb0aad1 100644
+--- a/arch/arm/core/cortex_m/prep_c.c
++++ b/arch/arm/core/cortex_m/prep_c.c
+@@ -179,7 +179,7 @@ extern FUNC_NORETURN void z_cstart(void);
+  * This routine prepares for the execution of and runs C code.
+  *
+  */
+-void z_prep_c(void)
++void z_prep_c(void)// @NOTE
+ {
+ 	relocate_vector_table();
+ #if defined(CONFIG_CPU_HAS_FPU)
+@@ -193,6 +193,6 @@ void z_prep_c(void)
+ #else
+ 	z_arm_interrupt_init();
+ #endif /* CONFIG_ARM_CUSTOM_INTERRUPT_CONTROLLER */
+-	z_cstart();
++	z_cstart();// @NOTE
+ 	CODE_UNREACHABLE;
+ }
+diff --git a/arch/arm/core/cortex_m/vector_table.h b/arch/arm/core/cortex_m/vector_table.h
+index a10663b4..bca69742 100644
+--- a/arch/arm/core/cortex_m/vector_table.h
++++ b/arch/arm/core/cortex_m/vector_table.h
+@@ -50,7 +50,7 @@ GTEXT(z_arm_debug_monitor)
+ GTEXT(z_arm_pendsv)
+ GTEXT(z_arm_exc_spurious)
+ 
+-GTEXT(z_prep_c)
++GTEXT(z_prep_c)// @NOTE
+ #if defined(CONFIG_GEN_ISR_TABLES)
+ GTEXT(_isr_wrapper)
+ #endif /* CONFIG_GEN_ISR_TABLES */
+diff --git a/arch/arm64/core/reset.S b/arch/arm64/core/reset.S
+index cfcffec4..9e83d709 100644
+--- a/arch/arm64/core/reset.S
++++ b/arch/arm64/core/reset.S
+@@ -188,7 +188,7 @@ primary_core:
+ #endif
+ 	/* load primary stack and entry point */
+ 	ldr	x24, =(z_interrupt_stacks + __z_interrupt_stack_SIZEOF)
+-	ldr	x25, =z_prep_c
++	ldr	x25, =z_prep_c// @NOTE
+ boot:
+ 	/* Prepare for calling C code */
+ 	bl	__reset_prep_c
+diff --git a/arch/nios2/core/crt0.S b/arch/nios2/core/crt0.S
+index 2f708bf2..2501d7ae 100644
+--- a/arch/nios2/core/crt0.S
++++ b/arch/nios2/core/crt0.S
+@@ -142,5 +142,5 @@ SECTION_FUNC(TEXT, __start)
+ 
+ 	/* Jump into C domain. z_prep_c zeroes BSS, copies rw data into RAM,
+ 	 * and then enters z_cstart */
+-	call z_prep_c
++	call z_prep_c// @NOTE 
+ 
+diff --git a/include/zephyr/toolchain/gcc.h b/include/zephyr/toolchain/gcc.h
+index 646deea0..4e1825c5 100644
+--- a/include/zephyr/toolchain/gcc.h
++++ b/include/zephyr/toolchain/gcc.h
+@@ -353,7 +353,7 @@ do {                                                                    \
+ #if defined(CONFIG_ARM) || defined(CONFIG_NIOS2) || defined(CONFIG_RISCV) \
+ 	|| defined(CONFIG_XTENSA) || defined(CONFIG_ARM64) \
+ 	|| defined(CONFIG_MIPS)
+-#define GTEXT(sym) .global sym; .type sym, %function
++#define GTEXT(sym) .global sym; .type sym, %function// @NOTE
+ #define GDATA(sym) .global sym; .type sym, %object
+ #define WTEXT(sym) .weak sym; .type sym, %function
+ #define WDATA(sym) .weak sym; .type sym, %object
+diff --git a/include/zephyr/tracing/tracing_macros.h b/include/zephyr/tracing/tracing_macros.h
+index 7ed99061..7a83680f 100644
+--- a/include/zephyr/tracing/tracing_macros.h
++++ b/include/zephyr/tracing/tracing_macros.h
+@@ -15,7 +15,7 @@
+ #define SYS_PORT_TRACING_FUNC_BLOCKING(type, func, ...) do { } while (false)
+ #define SYS_PORT_TRACING_FUNC_EXIT(type, func, ...) do { } while (false)
+ #define SYS_PORT_TRACING_OBJ_INIT(obj_type, obj, ...) do { } while (false)
+-#define SYS_PORT_TRACING_OBJ_FUNC(obj_type, func, obj, ...) do { } while (false)
++#define SYS_PORT_TRACING_OBJ_FUNC(obj_type, func, obj, ...) do { } while (false)// @NOTE
+ #define SYS_PORT_TRACING_OBJ_FUNC_ENTER(obj_type, func, obj, ...) do { } while (false)
+ #define SYS_PORT_TRACING_OBJ_FUNC_BLOCKING(obj_type, func, obj, ...) do { } while (false)
+ #define SYS_PORT_TRACING_OBJ_FUNC_EXIT(obj_type, func, obj, ...) do { } while (false)
+diff --git a/kernel/idle.c b/kernel/idle.c
+index ae39f710..c1648dd8 100644
+--- a/kernel/idle.c
++++ b/kernel/idle.c
+@@ -33,7 +33,7 @@ void z_pm_save_idle_exit(void)
+ #endif
+ }
+ 
+-void idle(void *unused1, void *unused2, void *unused3)
++void idle(void *unused1, void *unused2, void *unused3)// @NOTE
+ {
+ 	ARG_UNUSED(unused1);
+ 	ARG_UNUSED(unused2);
+diff --git a/kernel/include/priority_q.h b/kernel/include/priority_q.h
+index 61496aa4..da99b30f 100644
+--- a/kernel/include/priority_q.h
++++ b/kernel/include/priority_q.h
+@@ -33,7 +33,7 @@
+ 
+ #define _priq_run_add		z_priq_mq_add
+ #define _priq_run_remove	z_priq_mq_remove
+-#define _priq_run_best		z_priq_mq_best
++#define _priq_run_best		z_priq_mq_best// @NOTE
+ static ALWAYS_INLINE void z_priq_mq_add(struct _priq_mq *pq, struct k_thread *thread);
+ static ALWAYS_INLINE void z_priq_mq_remove(struct _priq_mq *pq, struct k_thread *thread);
+ #endif
+diff --git a/kernel/init.c b/kernel/init.c
+index 81705e87..33cb267b 100644
+--- a/kernel/init.c
++++ b/kernel/init.c
+@@ -60,7 +60,7 @@ static K_KERNEL_PINNED_STACK_ARRAY_DEFINE(z_idle_stacks,
+ 					  CONFIG_MP_MAX_NUM_CPUS,
+ 					  CONFIG_IDLE_STACK_SIZE);
+ 
+-static void z_init_static_threads(void)
++static void z_init_static_threads(void)// @NOTE
+ {
+ 	STRUCT_SECTION_FOREACH(_static_thread_data, thread_data) {
+ 		z_setup_new_thread(
+@@ -372,7 +372,7 @@ extern void boot_banner(void);
+  * init functions, then invokes application's main() routine.
+  */
+ __boot_func
+-static void bg_thread_main(void *unused1, void *unused2, void *unused3)
++static void bg_thread_main(void *unused1, void *unused2, void *unused3)// @NOTE
+ {
+ 	ARG_UNUSED(unused1);
+ 	ARG_UNUSED(unused2);
+@@ -402,7 +402,7 @@ static void bg_thread_main(void *unused1, void *unused2, void *unused3)
+ 	/* Final init level before app starts */
+ 	z_sys_init_run_level(INIT_LEVEL_APPLICATION);
+ 
+-	z_init_static_threads();
++	z_init_static_threads();// @NOTE
+ 
+ #ifdef CONFIG_KERNEL_COHERENCE
+ 	__ASSERT_NO_MSG(arch_mem_coherent(&_kernel));
+@@ -506,7 +506,7 @@ void z_init_cpu(int id)
+  * @return initial stack pointer for the main thread
+  */
+ __boot_func
+-static char *prepare_multithreading(void)
++static char *prepare_multithreading(void)// @NOTE
+ {
+ 	char *stack_ptr;
+ 
+@@ -526,7 +526,7 @@ static char *prepare_multithreading(void)
+ 	_kernel.ready_q.cache = &z_main_thread;
+ #endif
+ 	stack_ptr = z_setup_new_thread(&z_main_thread, z_main_stack,
+-				       CONFIG_MAIN_STACK_SIZE, bg_thread_main,
++				       CONFIG_MAIN_STACK_SIZE, bg_thread_main,// @NOTE
+ 				       NULL, NULL, NULL,
+ 				       CONFIG_MAIN_THREAD_PRIORITY,
+ 				       K_ESSENTIAL, "main");
+@@ -601,7 +601,7 @@ void __weak z_early_rand_get(uint8_t *buf, size_t length)
+  */
+ __boot_func
+ FUNC_NO_STACK_PROTECTOR
+-FUNC_NORETURN void z_cstart(void)
++FUNC_NORETURN void z_cstart(void)// @NOTE
+ {
+ 	/* gcov hook needed to get the coverage report.*/
+ 	gcov_static_init();
+@@ -643,7 +643,7 @@ FUNC_NORETURN void z_cstart(void)
+ #endif
+ 
+ #ifdef CONFIG_MULTITHREADING
+-	switch_to_main_thread(prepare_multithreading());
++	switch_to_main_thread(prepare_multithreading());// @NOTE
+ #else
+ #ifdef ARCH_SWITCH_TO_MAIN_NO_MULTITHREADING
+ 	/* Custom ARCH-specific routine to switch to main()
+diff --git a/kernel/priority_queues.c b/kernel/priority_queues.c
+index 692abfa7..fed6645e 100644
+--- a/kernel/priority_queues.c
++++ b/kernel/priority_queues.c
+@@ -93,7 +93,7 @@ struct k_thread *z_priq_rb_best(struct _priq_rb *pq)
+ 	return thread;
+ }
+ 
+-struct k_thread *z_priq_mq_best(struct _priq_mq *pq)
++struct k_thread *z_priq_mq_best(struct _priq_mq *pq)// @NOTE
+ {
+ 	struct k_thread *thread = NULL;
+ 
+diff --git a/kernel/sched.c b/kernel/sched.c
+index 57974044..6f44456d 100644
+--- a/kernel/sched.c
++++ b/kernel/sched.c
+@@ -304,7 +304,7 @@ static inline void clear_halting(struct k_thread *thread)
+ 	thread->base.thread_state &= ~(_THREAD_ABORTING | _THREAD_SUSPENDING);
+ }
+ 
+-static ALWAYS_INLINE struct k_thread *next_up(void)
++static ALWAYS_INLINE struct k_thread *next_up(void)// @NOTE
+ {
+ #ifdef CONFIG_SMP
+ 	if (is_halting(_current)) {
+@@ -313,7 +313,7 @@ static ALWAYS_INLINE struct k_thread *next_up(void)
+ 	}
+ #endif
+ 
+-	struct k_thread *thread = runq_best();
++	struct k_thread *thread = runq_best();// @NOTE @# key func
+ 
+ #if (CONFIG_NUM_METAIRQ_PRIORITIES > 0) &&                                                         \
+ 	(CONFIG_NUM_COOP_PRIORITIES > CONFIG_NUM_METAIRQ_PRIORITIES)
+diff --git a/kernel/thread.c b/kernel/thread.c
+index dc512a45..d61eb502 100644
+--- a/kernel/thread.c
++++ b/kernel/thread.c
+@@ -463,7 +463,7 @@ static char *setup_thread_stack(struct k_thread *new_thread,
+  * K_THREAD_STACK_SIZEOF(stack), or the size value passed to the instance
+  * of K_THREAD_STACK_DEFINE() which defined 'stack'.
+  */
+-char *z_setup_new_thread(struct k_thread *new_thread,
++char *z_setup_new_thread(struct k_thread *new_thread,// @NOTE
+ 			 k_thread_stack_t *stack, size_t stack_size,
+ 			 k_thread_entry_t entry,
+ 			 void *p1, void *p2, void *p3,
+@@ -515,7 +515,7 @@ char *z_setup_new_thread(struct k_thread *new_thread,
+ 
+ #endif
+ 
+-	arch_new_thread(new_thread, stack, stack_ptr, entry, p1, p2, p3);
++	arch_new_thread(new_thread, stack, stack_ptr, entry, p1, p2, p3);// @NOTE
+ 
+ 	/* static threads overwrite it afterwards with real value */
+ 	new_thread->init_data = NULL;
+@@ -543,8 +543,8 @@ char *z_setup_new_thread(struct k_thread *new_thread,
+ 
+ 	k_spinlock_key_t key = k_spin_lock(&z_thread_monitor_lock);
+ 
+-	new_thread->next_thread = _kernel.threads;
+-	_kernel.threads = new_thread;
++	new_thread->next_thread = _kernel.threads;// @NOTE
++	_kernel.threads = new_thread;// @NOTE
+ 	k_spin_unlock(&z_thread_monitor_lock, key);
+ #endif
+ #ifdef CONFIG_THREAD_NAME
+@@ -584,7 +584,7 @@ char *z_setup_new_thread(struct k_thread *new_thread,
+ 	new_thread->resource_pool = _current->resource_pool;
+ 
+ #ifdef CONFIG_SMP
+-	z_waitq_init(&new_thread->halt_queue);
++	z_waitq_init(&new_thread->halt_queue);// @NOTE
+ #endif
+ 
+ #ifdef CONFIG_SCHED_THREAD_USAGE
+@@ -593,7 +593,7 @@ char *z_setup_new_thread(struct k_thread *new_thread,
+ 		CONFIG_SCHED_THREAD_USAGE_AUTO_ENABLE;
+ #endif
+ 
+-	SYS_PORT_TRACING_OBJ_FUNC(k_thread, create, new_thread);
++	SYS_PORT_TRACING_OBJ_FUNC(k_thread, create, new_thread);// @NOTE
+ 
+ 	return stack_ptr;
+ }

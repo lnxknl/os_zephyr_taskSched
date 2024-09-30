@@ -1,0 +1,18 @@
+# Copyright (c) 2022 Nordic Semiconductor ASA
+
+# SPDX-License-Identifier: Apache-2.0
+
+BOARD_STRING := $(normalize_upper,$(BOARD))
+BOARD_TARGET_STRING := $(normalize_upper,$(BOARD)$(BOARD_QUALIFIERS))
+
+config BOARD_$(BOARD_STRING)
+	def_bool y
+	help
+	  Kconfig symbol identifying the board.
+
+config BOARD_$(BOARD_TARGET_STRING)
+	def_bool y
+	help
+	  Kconfig symbol identifying the board target.
+
+osource "$(BOARD_DIR)/Kconfig.$(BOARD)"
